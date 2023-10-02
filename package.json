@@ -53,6 +53,7 @@
 		]
 	},
 	"dependencies": {
+		"babel-loader": "8.1.0",
 		"@chakra-ui/react": "1.6.0",
 		"@emotion/react": "^11.0.0",
 		"@emotion/styled": "^11.0.0",
@@ -69,13 +70,14 @@
 		"react-dom": "^17.0.1"
 	},
 	"devDependencies": {
-		"@storybook/addon-actions": "^6.2.9",
-		"@storybook/addon-console": "^1.2.3",
-		"@storybook/addon-essentials": "^6.2.9",
-		"@storybook/addon-links": "^6.2.9",
-		"@storybook/node-logger": "^6.2.9",
-		"@storybook/preset-create-react-app": "^3.1.7",
-		"@storybook/react": "^6.2.9",
+		"babel-loader": "8.1.0",
+		"@storybook/addon-actions": "6.2.9",
+		"@storybook/addon-console": "1.2.3",
+		"@storybook/addon-essentials": "6.2.9",
+		"@storybook/addon-links": "6.2.9",
+		"@storybook/node-logger": "6.2.9",
+		"@storybook/preset-create-react-app": "3.1.7",
+		"@storybook/react": "6.2.9",
 		"@testing-library/jest-dom": "^5.9.0",
 		"@testing-library/react": "^10.2.1",
 		"@testing-library/user-event": "^12.0.2",
@@ -88,5 +90,8 @@
 		"react": "^17.0.1",
 		"react-dom": "^17.0.1",
 		"react-scripts": "4.0.3"
+	},
+	"resolutions": {
+		"babel-loader": "8.1.0"
 	}
 }

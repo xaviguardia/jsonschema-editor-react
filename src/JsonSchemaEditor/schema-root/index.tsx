@@ -116,9 +116,11 @@ export const SchemaRoot: React.FunctionComponent<SchemaArrayProps> = (
 								aria-label="Add Child Node"
 								onClick={() => {
 									const fieldName = `field_${random()}`;
-									(state.properties as State<{
-										[key: string]: JSONSchema7;
-									}>)[fieldName].set(getDefaultSchema(DataType.string));
+									(
+										state.properties as State<{
+											[key: string]: JSONSchema7;
+										}>
+									)[fieldName].set(getDefaultSchema(DataType.string));
 								}}
 							/>
 						</Tooltip>
