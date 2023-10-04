@@ -30,12 +30,13 @@ import { renameKeys, deleteKey } from "../utils";
 import { useDebouncedCallback } from "use-debounce";
 import { SchemaObject } from "../schema-object";
 import { SchemaArray } from "../schema-array";
+import { RefEditorComponent } from "../schema-defs";
 
 export interface SchemaItemProps extends FlexProps {
 	required: string[];
 	itemStateProp: State<JSONSchema7>;
 	parentStateProp: State<JSONSchema7>;
-	rootStateProp: JSONSchema7;
+
 	name: string;
 	isReadOnly: State<boolean>;
 	showadvanced: (item: string) => void;
@@ -45,7 +46,6 @@ export const SchemaItem: React.FunctionComponent<SchemaItemProps> = (
 	props: React.PropsWithChildren<SchemaItemProps>
 ) => {
 	const {
-		rootStateProp,
 		name,
 		itemStateProp,
 		showadvanced,
@@ -54,12 +54,8 @@ export const SchemaItem: React.FunctionComponent<SchemaItemProps> = (
 		isReadOnly,
 	} = props;
 
-	// const itemState = useState(itemStateProp);
 	const parentState = useState(parentStateProp);
-	var rootState = rootStateProp || parentState.value;
-	console.log("in item rootState", rootState);
 
-	console.log("rootState", rootState);
 	const parentStateOrNull: State<JSONSchema7> | undefined = parentState.ornull;
 	const propertiesOrNull:
 		| State<{
@@ -71,11 +67,9 @@ export const SchemaItem: React.FunctionComponent<SchemaItemProps> = (
 	const isReadOnlyState = useState(isReadOnly);
 
 	const itemState = useState(
-		(
-			parentStateProp.properties as State<{
-				[key: string]: JSONSchema7;
-			}>
-		).nested(nameState.value)
+		(parentStateProp.properties as State<{
+			[key: string]: JSONSchema7;
+		}>).nested(nameState.value)
 	);
 
 	const { length } = parentState.path.filter((name) => name !== "properties");
@@ -157,15 +151,13 @@ export const SchemaItem: React.FunctionComponent<SchemaItemProps> = (
 					}}
 				/>
 				<RefEditorComponent
-					rootStateProp={rootState}
 					defaultValue={itemStateProp.$ref?.value || ""}
 					handleChange={(value: string) => {
-						console.log("handleChange seledr", value);
 						if (value) {
 							itemState.type.set(undefined);
+							itemState.properties.set(undefined);
 						}
 						itemState.$ref.set(value);
-						console.log(JSON.stringify(itemState.value));
 					}}
 				/>
 				<Select
@@ -195,7 +187,7 @@ export const SchemaItem: React.FunctionComponent<SchemaItemProps> = (
 				</Select>
 				<Input
 					isDisabled={isReadOnlyState.value}
-					value={itemState.title.value || ""}
+					value={itemState.title?.value || ""}
 					size="sm"
 					margin={2}
 					variant="outline"
@@ -206,7 +198,7 @@ export const SchemaItem: React.FunctionComponent<SchemaItemProps> = (
 				/>
 				<Input
 					isDisabled={isReadOnlyState.value}
-					value={itemState.description.value || ""}
+					value={itemState.description?.value || ""}
 					size="sm"
 					margin={2}
 					variant="outline"
@@ -216,31 +208,32 @@ export const SchemaItem: React.FunctionComponent<SchemaItemProps> = (
 					}}
 				/>
 
-				{itemState.type.value !== "object" && itemState.type.value !== "array" && (
-					<Tooltip
-						hasArrow
-						aria-label="Advanced Settings"
-						label="Advanced Settings"
-						placement="top"
-					>
-						<IconButton
-							isRound
-							isDisabled={isReadOnlyState.value}
-							size="sm"
-							mt={2}
-							mb={2}
-							ml={1}
-							variant="link"
-							colorScheme="blue"
-							fontSize="16px"
-							icon={<FiSettings />}
+				{itemState.type?.value !== "object" &&
+					itemState.type?.value !== "array" && (
+						<Tooltip
+							hasArrow
 							aria-label="Advanced Settings"
-							onClick={() => {
-								showadvanced(name);
-							}}
-						/>
-					</Tooltip>
-				)}
+							label="Advanced Settings"
+							placement="top"
+						>
+							<IconButton
+								isRound
+								isDisabled={isReadOnlyState?.value}
+								size="sm"
+								mt={2}
+								mb={2}
+								ml={1}
+								variant="link"
+								colorScheme="blue"
+								fontSize="16px"
+								icon={<FiSettings />}
+								aria-label="Advanced Settings"
+								onClick={() => {
+									showadvanced(name);
+								}}
+							/>
+						</Tooltip>
+					)}
 
 				<Tooltip
 					hasArrow
@@ -308,53 +301,11 @@ export const SchemaItem: React.FunctionComponent<SchemaItemProps> = (
 				)}
 			</Flex>
 			{itemState.type?.value === "object" && (
-				<SchemaObject
-					isReadOnly={isReadOnlyState}
-					schemaState={itemState}
-					rootState={rootState}
-				/>
+				<SchemaObject isReadOnly={isReadOnlyState} schemaState={itemState} />
 			)}
 			{itemState.type?.value === "array" && (
 				<SchemaArray isReadOnly={isReadOnlyState} schemaState={itemState} />
 			)}
 		</div>
-	);
-};
-
-export interface DefinitionItemProps extends FlexProps {
-	rootStateProp: JSONSchema7;
-	defaultValue: string;
-	handleChange: (value: string) => void;
-}
-
-const RefEditorComponent: React.FunctionComponent<DefinitionItemProps> = (
-	props: React.PropsWithChildren<DefinitionItemProps>
-) => {
-	const { rootStateProp, defaultValue, handleChange } = props;
-
-	const myState = rootStateProp;
-	return (
-		<Select
-			variant="outline"
-			size="sm"
-			margin={2}
-			defaultValue={defaultValue}
-			onChange={(evt) => {
-				debugger;
-				handleChange && handleChange(evt.target.value);
-			}}
-		>
-			<option value="">Seleccione una opción</option>
-			{myState &&
-				myState.definitions && // recorrer las claves de myState.definitions
-				Object.keys(myState.definitions).map((key, index) => {
-					const theKey = "#/$defs/" + key;
-					return (
-						<option key={index} value={theKey}>
-							{myState?.definitions[key].description} - {theKey}
-						</option>
-					);
-				})}
-		</Select>
 	);
 };

@@ -29,6 +29,7 @@ import {
 
 import { SchemaObject } from "../schema-object";
 import { AdvancedSettings } from "../schema-advanced";
+import { RefEditorComponent } from "../schema-defs";
 export interface SchemaArrayProps extends FlexProps {
 	schemaState: State<JSONSchema7>;
 	isReadOnly: State<boolean>;
@@ -80,10 +81,23 @@ export const SchemaArray: React.FunctionComponent<SchemaArrayProps> = (
 					variant="outline"
 				/>
 				<Checkbox isDisabled margin={2} colorScheme="blue" />
+				<RefEditorComponent
+					defaultValue={state.$ref?.value || ""}
+					handleChange={(value: string) => {
+						if (value) {
+							state.type.set(undefined);
+							state.properties.set(undefined);
+						}
+						state.$ref.set(value);
+					}}
+				/>
 				<Select
 					variant="outline"
-					isDisabled={isReadOnlyState.value}
-					value={state.type.value as JSONSchema7TypeName}
+					isDisabled={
+						(state.$ref?.value != null && state.$ref?.value != "") ||
+						isReadOnlyState.value
+					}
+					value={state.type?.value as JSONSchema7TypeName}
 					size="sm"
 					margin={2}
 					placeholder="Choose data type"
@@ -104,7 +118,7 @@ export const SchemaArray: React.FunctionComponent<SchemaArrayProps> = (
 					})}
 				</Select>
 				<Input
-					value={state.title.value}
+					value={state.title?.value}
 					isDisabled={isReadOnlyState.value}
 					size="sm"
 					margin={2}
@@ -115,7 +129,7 @@ export const SchemaArray: React.FunctionComponent<SchemaArrayProps> = (
 					}}
 				/>
 				<Input
-					value={state.description.value}
+					value={state.description?.value}
 					isDisabled={isReadOnlyState.value}
 					size="sm"
 					margin={2}
@@ -133,7 +147,7 @@ export const SchemaArray: React.FunctionComponent<SchemaArrayProps> = (
 				>
 					<IconButton
 						isRound
-						isDisabled={isReadOnlyState.value}
+						isDisabled={isReadOnlyState?.value}
 						size="sm"
 						mt={2}
 						mb={2}
@@ -149,7 +163,7 @@ export const SchemaArray: React.FunctionComponent<SchemaArrayProps> = (
 					/>
 				</Tooltip>
 
-				{state.type.value === "object" && (
+				{state.type?.value === "object" && (
 					<Tooltip
 						hasArrow
 						aria-label="Add Child Node"

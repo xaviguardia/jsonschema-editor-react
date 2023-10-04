@@ -8,7 +8,7 @@ import { SchemaRoot } from "./schema-root";
 import { Whoops } from "./whoops";
 import { SchemaObject } from "./schema-object";
 import { SchemaArray } from "./schema-array";
-
+import { DataProvider } from "./datacontext/Datacontext";
 export * from "../JsonSchemaEditor.types";
 
 export const JsonSchemaEditor = (props: SchemaEditorProps) => {
@@ -20,38 +20,40 @@ export const JsonSchemaEditor = (props: SchemaEditorProps) => {
 		fieldId: 0,
 	});
 
+	console.log("in json-schema-editor", data);
 	const jsonSchemaState = useState(schemaState.jsonSchema);
 
 	return (
 		<ChakraProvider theme={theme}>
-			{schemaState.isValidSchema ? (
-				<Flex m={2} direction="column">
-					<SchemaRoot
-						onSchemaChange={onSchemaChange}
-						schemaState={schemaState.jsonSchema}
-						isReadOnly={schemaState.isReadOnly}
-					/>
-
-					{jsonSchemaState.type.value === "object" && (
-						<SchemaObject
-							schemaState={jsonSchemaState}
-							isReadOnly={schemaState.isReadOnly ?? false}
+			<DataProvider initialDefinitions={data?.definitions}>
+				{schemaState.isValidSchema ? (
+					<Flex m={2} direction="column">
+						<SchemaRoot
+							onSchemaChange={onSchemaChange}
+							schemaState={schemaState.jsonSchema}
+							isReadOnly={schemaState.isReadOnly}
 						/>
-					)}
 
-					{jsonSchemaState.type.value === "array" && (
-						<SchemaArray
-							schemaState={jsonSchemaState}
-							isReadOnly={schemaState.isReadOnly ?? false}
-						/>
-					)}
-				</Flex>
-			) : (
-				<Flex alignContent="center" justifyContent="center">
-					<Whoops />
-				</Flex>
-			)}
-			{/* <Modal
+						{jsonSchemaState.type.value === "object" && (
+							<SchemaObject
+								schemaState={jsonSchemaState}
+								isReadOnly={schemaState.isReadOnly ?? false}
+							/>
+						)}
+
+						{jsonSchemaState.type.value === "array" && (
+							<SchemaArray
+								schemaState={jsonSchemaState}
+								isReadOnly={schemaState.isReadOnly ?? false}
+							/>
+						)}
+					</Flex>
+				) : (
+					<Flex alignContent="center" justifyContent="center">
+						<Whoops />
+					</Flex>
+				)}
+				{/* <Modal
         isOpen={localState.isAdvancedOpen.get()}
         finalFocusRef={focusRef}
         size="lg"
@@ -77,6 +79,7 @@ export const JsonSchemaEditor = (props: SchemaEditorProps) => {
           </ModalFooter>
         </ModalContent>
       </Modal> */}
+			</DataProvider>
 		</ChakraProvider>
 	);
 };

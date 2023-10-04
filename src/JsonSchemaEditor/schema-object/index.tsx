@@ -15,16 +15,16 @@ import {
 	ModalOverlay,
 } from "@chakra-ui/react";
 import { AdvancedSettings } from "../schema-advanced";
+
 export interface SchemaObjectProps {
 	schemaState: State<JSONSchema7>;
 	isReadOnly: State<boolean>;
-	rootState: JSONSchema7;
 }
 
 export const SchemaObject: React.FunctionComponent<SchemaObjectProps> = (
 	props: React.PropsWithChildren<SchemaObjectProps>
 ) => {
-	const { schemaState, isReadOnly, rootState } = props;
+	const { schemaState, isReadOnly } = props;
 
 	const schema = useState(schemaState);
 	const properties = useState(schema.properties);
@@ -61,7 +61,6 @@ export const SchemaObject: React.FunctionComponent<SchemaObjectProps> = (
 				{propertiesOrNull?.keys?.map((name) => {
 					return (
 						<SchemaItem
-							rootStateProp={rootState}
 							key={String(name)}
 							itemStateProp={
 								propertiesOrNull.nested(name as string) as State<JSONSchema7>

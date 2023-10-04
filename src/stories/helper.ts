@@ -6,7 +6,7 @@ export const bad = {
 };
 
 export const readOnlyData: JSONSchema7 = {
-	definitions: {
+	$defs: {
 		enumOneOrMinusOne: {
 			type: "integer",
 			enum: [-1, 1],
