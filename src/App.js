@@ -15,7 +15,28 @@ import "brace/theme/github";
 import Form from "@rjsf/material-ui";
 import readOnlyData from "./schemas/schema2.json";
 import validator from "@rjsf/validator-ajv8";
-
+import { InferSchema } from "./JsonSchemaEditor/schema-infer";
+const json = `{
+	"name": "John Doe",
+	"address": "123 Main St",
+	"age": 29,
+	"phone": [
+		
+		{
+			"type": "home",
+			"number": "212 555-1234"
+		},
+		{
+			"type": "fax",
+			"number": "646 555-4567"
+		}
+	],
+	"preferences": [
+		"sports",
+		"movies",
+		"music"
+	]
+}`;
 export const readOnlyDatax: JSONSchema7 = {
 	definitions: {
 		enumOneOrMinusOne: {
@@ -66,9 +87,9 @@ function App() {
 }
 
 function Accordions() {
-	const formData = {};
+	const formData = JSON.parse(json);
 	const [managedSchema, setManagedSchema] = useState(null);
-	const [editingSchema, setEditingSchema] = useState(readOnlyData);
+	const [editingSchema, setEditingSchema] = useState(null);
 	const [definitions, setDefinitions] = useState(readOnlyData.definitions);
 	const handleChangeDefinitions = (data) => {
 		console.log("change definitions", data);
@@ -92,6 +113,12 @@ function Accordions() {
 	return (
 		<div>
 			<Accordion allowMultiple>
+				<AccordionItem>
+					<AccordionButton>EDIT JSOn - Infer schema</AccordionButton>
+					<AccordionPanel>
+						<InferSchema changeSchema={(data) => handleChangeSchema(data)} />
+					</AccordionPanel>
+				</AccordionItem>
 				<AccordionItem>
 					<AccordionButton>Definitions</AccordionButton>
 					<AccordionPanel>
@@ -118,10 +145,12 @@ function Accordions() {
 					<AccordionButton>Schema Editor</AccordionButton>
 					<AccordionPanel>
 						<>
-							<JsonSchemaEditor
-								data={editingSchema}
-								onSchemaChange={(schema) => handleChangeSchema(schema)}
-							/>
+							{editingSchema && (
+								<JsonSchemaEditor
+									data={editingSchema}
+									onSchemaChange={(schema) => handleChangeSchema(schema)}
+								/>
+							)}
 						</>
 					</AccordionPanel>
 				</AccordionItem>
