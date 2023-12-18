@@ -60,7 +60,7 @@ export const InferSchema = ({ json, changeSchema }) => {
 				<FormLabel>JSON Input</FormLabel>
 				<Textarea
 					value={json}
-					onChange={(e) => setJson(e.target.value)}
+					onChange={(e) => {}}
 					placeholder="Enter JSON here"
 				/>
 			</FormControl>

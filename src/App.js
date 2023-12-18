@@ -89,7 +89,7 @@ function App() {
 function Accordions() {
 	const formData = JSON.parse(json);
 	const [managedSchema, setManagedSchema] = useState(null);
-	const [editingSchema, setEditingSchema] = useState(null);
+	const [editingSchema, setEditingSchema] = useState({ ...readOnlyData });
 	const [definitions, setDefinitions] = useState(readOnlyData.definitions);
 	const handleChangeDefinitions = (data) => {
 		console.log("change definitions", data);
@@ -148,6 +148,7 @@ function Accordions() {
 							{editingSchema && (
 								<JsonSchemaEditor
 									data={editingSchema}
+									definitions={definitions}
 									onSchemaChange={(schema) => handleChangeSchema(schema)}
 								/>
 							)}
